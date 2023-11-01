@@ -1,0 +1,9 @@
+ref_id, table_name, name, ref_value, desc
+
+
+
+1	attribute	attr_meta	{"in_form": 1, "in_grid": 1, "is_hidden": 0, "attr_order": 1, "attr_width": "", "is_sortable": 1, "is_filterable": 1}	Attribute grid, and form configuration
+2	attribute_value	attr_fetch_value	{"fetch_criteria": {"fetch_by": "content_id", "fetch_value": 7, "content_attr_ids": [60, 61]}}	for datalist types, it fetches
+3	dy_value	field_value	{"attr_ids": [60, 61], "entity_id": 211}	when the attribute-entity value is a combination of other attr-entity/s values - for now this happenes when the value of the the dy_value is coming from searchable list-select
+4	{"event": {"source": {"target_key": "entity_id","mapping_attr_id": 55,"to_update_attr_id": 62},"operations": {"attempt_query": "UPDATE dy_value SET field_value = field_value + 1 WHERE field_value IS NOT NULL AND field_value REGEXP ?', ['^[0-9]+(\\.[0-9]+)?$'] and attr_id = 62 AND entity_id = ","action_query": "INSERT INTO dy_value (attr_id, field_value, entity_id) VALUES (62, 1, ?)"}}}
+				

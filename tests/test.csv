@@ -1,0 +1,3 @@
+entity_id,entity_type,attr_id,attr_name,field_value
+1,employee,1,empName,Ali
+1,employee,2,empEmail,ali@ali.com

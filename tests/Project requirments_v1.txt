@@ -1,0 +1,2 @@
+Project requirments (1):
+Menu [Dashboard, Stock, Suppliers, Customers, Invoices, Reports, Users]
