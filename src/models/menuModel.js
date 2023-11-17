@@ -1,20 +1,15 @@
 const pool = require('../config/db');
 
-<<<<<<< HEAD
 function getRoutes(callback) {
   const query = `SELECT
   pr.primary_route_id, pr.primary_route_title, pr.primary_route_icon, pr.primary_route_item_order, pr.primary_route_path, pr.primary_route_status,
   c.content_id, c.content_title,
   ct.content_type_title,ct.content_type_key
   FROM primary_route pr
-  INNER JOIN route_content rt ON rt.primary_route_id = pr.primary_route_id
-  INNER JOIN content c ON c.content_id = rt.content_id
-  INNER JOIN content_type ct on ct.content_type_id = c.content_type_id`;
+  left JOIN route_content rt ON rt.primary_route_id = pr.primary_route_id
+  left JOIN content c ON c.content_id = rt.content_id
+  left JOIN content_type ct on ct.content_type_id = c.content_type_id`;
 
-=======
-function getMenuItems(callback) {
-  const query = 'SELECT * FROM main_menu_items ORDER BY order_num';
->>>>>>> 51a48c526348877f506881957c0087dea1666080
   pool.query(query, (error, results) => {
     if (error) {
       return callback(error, null);
@@ -24,9 +19,5 @@ function getMenuItems(callback) {
 }
 
 module.exports = {
-<<<<<<< HEAD
   getRoutes,
-=======
-  getMenuItems,
->>>>>>> 51a48c526348877f506881957c0087dea1666080
 };

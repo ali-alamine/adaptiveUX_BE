@@ -8,19 +8,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema pulse_core
+-- Schema pulse_core_adaptive
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema pulse_core
+-- Schema pulse_core_adaptive
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `pulse_core` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-USE `pulse_core` ;
+CREATE SCHEMA IF NOT EXISTS `pulse_core_adaptive` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `pulse_core_adaptive` ;
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`action`
+-- Table `pulse_core_adaptive`.`action`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`action` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`action` (
   `action_id` INT NOT NULL AUTO_INCREMENT,
   `action_key` VARCHAR(100) NULL DEFAULT NULL,
   `action_title` VARCHAR(100) NULL DEFAULT NULL,
@@ -34,9 +34,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`action_content`
+-- Table `pulse_core_adaptive`.`action_content`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`action_content` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`action_content` (
   `content_id` INT NOT NULL,
   `action_id` INT NOT NULL,
   `action_content_query` JSON NULL DEFAULT NULL,
@@ -48,9 +48,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`attribute`
+-- Table `pulse_core_adaptive`.`attribute`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`attribute` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`attribute` (
   `attr_id` INT NOT NULL AUTO_INCREMENT,
   `attr_type_id` INT NULL DEFAULT NULL,
   `content_id` INT NULL DEFAULT NULL,
@@ -67,9 +67,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`attribute_type`
+-- Table `pulse_core_adaptive`.`attribute_type`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`attribute_type` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`attribute_type` (
   `attr_type_id` INT NOT NULL AUTO_INCREMENT,
   `attr_type_name` VARCHAR(100) NULL DEFAULT NULL,
   `attr_type` VARCHAR(70) NULL DEFAULT NULL,
@@ -83,9 +83,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`attribute_value`
+-- Table `pulse_core_adaptive`.`attribute_value`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`attribute_value` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`attribute_value` (
   `attr_value_id` INT NOT NULL AUTO_INCREMENT,
   `attr_id` INT NOT NULL,
   `attr_value` VARCHAR(255) NULL DEFAULT NULL,
@@ -101,9 +101,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`attribute_value_option`
+-- Table `pulse_core_adaptive`.`attribute_value_option`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`attribute_value_option` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`attribute_value_option` (
   `attr_value_opt_id` INT NOT NULL AUTO_INCREMENT,
   `attr_value_id` INT NULL DEFAULT NULL,
   `attr_value_opt_value` VARCHAR(255) NULL DEFAULT 'NA',
@@ -116,9 +116,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`content`
+-- Table `pulse_core_adaptive`.`content`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`content` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`content` (
   `content_id` INT NOT NULL AUTO_INCREMENT,
   `content_type_id` INT NOT NULL,
   `content_title` VARCHAR(45) NULL DEFAULT NULL,
@@ -131,9 +131,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`content_type`
+-- Table `pulse_core_adaptive`.`content_type`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`content_type` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`content_type` (
   `content_type_id` INT NOT NULL AUTO_INCREMENT,
   `content_type_title` VARCHAR(45) NULL DEFAULT NULL,
   `content_type_key` VARCHAR(45) NULL DEFAULT NULL,
@@ -145,9 +145,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`entity`
+-- Table `pulse_core_adaptive`.`entity`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`entity` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`entity` (
   `entity_id` INT NOT NULL AUTO_INCREMENT,
   `content_id` INT NULL DEFAULT NULL,
   `created_at` TIMESTAMP NULL DEFAULT NULL,
@@ -160,9 +160,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`dy_value`
+-- Table `pulse_core_adaptive`.`dy_value`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`dy_value` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`dy_value` (
   `value_id` INT NOT NULL AUTO_INCREMENT,
   `entity_id` INT NULL DEFAULT NULL,
   `attr_id` INT NULL DEFAULT NULL,
@@ -172,10 +172,10 @@ CREATE TABLE IF NOT EXISTS `pulse_core`.`dy_value` (
   INDEX `attr_id` (`attr_id` ASC) VISIBLE,
   CONSTRAINT `dy_value_ibfk_1`
     FOREIGN KEY (`entity_id`)
-    REFERENCES `pulse_core`.`entity` (`entity_id`),
+    REFERENCES `pulse_core_adaptive`.`entity` (`entity_id`),
   CONSTRAINT `dy_value_ibfk_2`
     FOREIGN KEY (`attr_id`)
-    REFERENCES `pulse_core`.`attribute` (`attr_id`))
+    REFERENCES `pulse_core_adaptive`.`attribute` (`attr_id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 725
 DEFAULT CHARACTER SET = utf8mb4
@@ -183,9 +183,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`entity_attribute`
+-- Table `pulse_core_adaptive`.`entity_attribute`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`entity_attribute` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`entity_attribute` (
   `entity_id` INT NOT NULL,
   `attr_id` INT NOT NULL,
   `attr_cell_meta` JSON NULL DEFAULT NULL,
@@ -194,19 +194,19 @@ CREATE TABLE IF NOT EXISTS `pulse_core`.`entity_attribute` (
   INDEX `attr_id` (`attr_id` ASC) VISIBLE,
   CONSTRAINT `entity_attribute_ibfk_1`
     FOREIGN KEY (`entity_id`)
-    REFERENCES `pulse_core`.`entity` (`entity_id`),
+    REFERENCES `pulse_core_adaptive`.`entity` (`entity_id`),
   CONSTRAINT `entity_attribute_ibfk_2`
     FOREIGN KEY (`attr_id`)
-    REFERENCES `pulse_core`.`attribute` (`attr_id`))
+    REFERENCES `pulse_core_adaptive`.`attribute` (`attr_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`event`
+-- Table `pulse_core_adaptive`.`event`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`event` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`event` (
   `event_id` INT NOT NULL AUTO_INCREMENT,
   `content_id` INT NULL DEFAULT NULL,
   `event_name` VARCHAR(45) NULL DEFAULT NULL,
@@ -224,9 +224,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`json_references`
+-- Table `pulse_core_adaptive`.`json_references`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`json_references` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`json_references` (
   `ref_id` INT NOT NULL AUTO_INCREMENT,
   `table_name` VARCHAR(45) NULL DEFAULT NULL,
   `name` VARCHAR(45) NULL DEFAULT NULL,
@@ -240,9 +240,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`primary_route`
+-- Table `pulse_core_adaptive`.`primary_route`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`primary_route` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`primary_route` (
   `primary_route_id` INT NOT NULL AUTO_INCREMENT,
   `primary_route_title` VARCHAR(255) CHARACTER SET 'utf8mb3' NULL DEFAULT NULL,
   `primary_route_icon` VARCHAR(255) CHARACTER SET 'utf8mb3' NULL DEFAULT NULL,
@@ -257,9 +257,9 @@ AUTO_INCREMENT = 16;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`route_content`
+-- Table `pulse_core_adaptive`.`route_content`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`route_content` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`route_content` (
   `route_content_id` INT NOT NULL AUTO_INCREMENT,
   `primary_route_id` INT NULL DEFAULT NULL,
   `content_id` INT NULL DEFAULT NULL,
@@ -271,9 +271,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`subroute`
+-- Table `pulse_core_adaptive`.`subroute`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`subroute` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`subroute` (
   `subroute_id` INT NOT NULL,
   `primary_route_id` INT NULL DEFAULT NULL,
   `subroute_title` VARCHAR(100) NULL DEFAULT NULL,
@@ -284,16 +284,16 @@ CREATE TABLE IF NOT EXISTS `pulse_core`.`subroute` (
   INDEX `idx_subroute_route_id` (`primary_route_id` ASC) VISIBLE,
   CONSTRAINT `fk_subroute_route_id`
     FOREIGN KEY (`primary_route_id`)
-    REFERENCES `pulse_core`.`primary_route` (`primary_route_id`))
+    REFERENCES `pulse_core_adaptive`.`primary_route` (`primary_route_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`subroute_child`
+-- Table `pulse_core_adaptive`.`subroute_child`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`subroute_child` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`subroute_child` (
   `subroute_child_id` INT NOT NULL,
   `subroute_id` INT NULL DEFAULT NULL,
   `subroute_child_title` VARCHAR(100) NULL DEFAULT NULL,
@@ -301,16 +301,16 @@ CREATE TABLE IF NOT EXISTS `pulse_core`.`subroute_child` (
   INDEX `fk_subroute_child_subroute_id` (`subroute_id` ASC) VISIBLE,
   CONSTRAINT `fk_subroute_child_subroute_id`
     FOREIGN KEY (`subroute_id`)
-    REFERENCES `pulse_core`.`subroute` (`subroute_id`))
+    REFERENCES `pulse_core_adaptive`.`subroute` (`subroute_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`user`
+-- Table `pulse_core_adaptive`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`user` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`user` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
@@ -327,9 +327,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `pulse_core`.`user_role`
+-- Table `pulse_core_adaptive`.`user_role`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `pulse_core`.`user_role` (
+CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`user_role` (
   `role_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NULL DEFAULT NULL,
   `role_name` VARCHAR(50) NOT NULL,
@@ -341,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `pulse_core`.`user_role` (
   INDEX `user_id` (`user_id` ASC) VISIBLE,
   CONSTRAINT `user_role_ibfk_1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `pulse_core`.`user` (`user_id`))
+    REFERENCES `pulse_core_adaptive`.`user` (`user_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

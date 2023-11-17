@@ -1,4 +1,4 @@
-import { EventTypes } from "../config/enums";
+const EventTypes = require('../config/enums');
 
 function getEnteredValue(arr, id, event_type) {
     if (event_type == EventTypes.ADD) {

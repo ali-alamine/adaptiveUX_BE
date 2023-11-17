@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 const mysql = require('mysql2');
-=======
-const mysql = require('mysql');
->>>>>>> 51a48c526348877f506881957c0087dea1666080
 
 // Database configuration for connection pool
 const pool = mysql.createPool({
@@ -10,7 +6,7 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'rootroot',
-  database: 'pulse_core',
+  database: 'pulse_core_adaptive',
 });
 
 // Test the connection pool
