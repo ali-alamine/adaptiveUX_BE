@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-// const menuController = require('../controllers/menuController');
+const styleController = require('../controllers/styleController');
 
-router.get('/get_routes', menuController.getRoutes);
+router.post('/get_routes', styleController.submitUserFeedback);
 
 
 module.exports = router;
