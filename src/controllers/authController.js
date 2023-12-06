@@ -8,6 +8,24 @@ function login(req, res) {
     })
 }
 
+function getUserRoles(req, res) {
+    authModel.getUserRoles((error, result) => {
+        if (error) return res.status(500).send(error);
+
+        return res.json(result)
+    })
+}
+
+function signUp(req, res) {
+
+    authModel.signUp(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result);
+    })
+}
+
 module.exports = {
-    login
+    login,
+    signUp,
+    getUserRoles
 }

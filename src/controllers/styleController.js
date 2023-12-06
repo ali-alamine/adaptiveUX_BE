@@ -8,6 +8,15 @@ function submitUserFeedback(req, res) {
     })
 }
 
+function getUserStyle(req, res) {
+    const data = req.data;
+    styleModel.getUserStyle(data, (error, result) => {
+        if (error) return res.status(500).send(error);
+        res.json(result)
+    })
+}
+
 module.exports = {
-    submitUserFeedback
+    submitUserFeedback,
+    getUserStyle
 }

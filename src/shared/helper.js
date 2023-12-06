@@ -44,7 +44,6 @@ function generateRoleVisits(callback) {
     // VALUES
     // (?,?,?,?,?,?,?,?)`;
 
-
     let query = `INSERT INTO user_nav
     (user_id,
     role_id,
@@ -54,9 +53,9 @@ function generateRoleVisits(callback) {
     VALUES
     (?,?,?,?,?)`;
 
-    let routesArray = shuffleArray([18,20, 22, 21, 16,23, 19, 24,18]);
+    let routesArray = shuffleArray([18,20, 22, 21, 16,23, 19, 24]);
     for (let i = 0; i < 1000; i++) {
-
+        user_id = randomUNumber(user_ids);
         let values = [randomUNumber(user_ids), 13, getRandomWeightedNumber(routesArray), randomUNumber([1, 2, 3]), 1];
         pool.query(query, values, (error, result) => {
             if (error) return callback(error, 'Error ');
@@ -66,9 +65,15 @@ function generateRoleVisits(callback) {
             }
         })
 
-
     }
 }
+
+// First prediction of the user_nav for new users, will be based on the role_id
+// Second prediction will be after collecting record of each route, after that, a prompt will be made to the user suggesting that based on recent activity, a new prediction
+// is available now. thus user, can accept or reject it
+
+//1. Make a first prediction on the creation of a new user
+//2. Make a second prediction after the collection of a sufficient data
 
 
 function shuffleArray(array) {
