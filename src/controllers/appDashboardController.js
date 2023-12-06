@@ -15,6 +15,13 @@ function addNewRoute(req, res) {
     })
 }
 
+function addContent(req, res) {
+    appDashboardModel.addContent(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result)
+    })
+}
+
 function getContnentType(req, res) {
     appDashboardModel.getContnentType(req, (error, result) => {
         if (error) res.status(500).send(error);
@@ -64,6 +71,20 @@ function addContentAttr(req, res) {
     })
 }
 
+function addAction(req, res) {
+    appDashboardModel.addAction(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result);
+    })
+}
+
+function getActions(req, res) {
+    appDashboardModel.getActions(req, (error, result) => {
+        if (error) res.sta(500).send(error);
+        return res.json(result);
+    })
+}
+
 module.exports = {
     getDashboardRoutes,
     addNewRoute,
@@ -74,4 +95,7 @@ module.exports = {
     getAttributeTypes,
     getContentAttributes,
     addContentAttr,
+    addContent,
+    addAction,
+    getActions
 }

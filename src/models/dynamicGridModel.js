@@ -43,11 +43,22 @@ function addGridRecord(req, callback) {
                                                 return callback(error, null);
                                             } else {
                                                 // 5. Fetch content events
-                                                applyEvents(conn, content_id, user_entered_values, EventTypes.ADD, (error) => {
+
+                                                // applyEvents(conn, content_id, user_entered_values, EventTypes.ADD, (error) => {
+                                                //     if (error) {
+                                                //         return callback(error, null);
+                                                //     } else {
+                                                //         return callback(null, { entity_id: entityID, content_id: content_id });
+                                                //     }
+                                                // });
+
+
+                                                conn.commit((error) => {
+                                                    conn.release();
                                                     if (error) {
-                                                        return callback(error, null);
+                                                        conn.rollback(() => callback(error, null));
                                                     } else {
-                                                        return callback(null, { entity_id: entityID, content_id: content_id });
+                                                        callback(null, "Record added successfully");
                                                     }
                                                 });
                                             }
@@ -137,10 +148,7 @@ LEFT JOIN attribute_value_option avo ON
         WHEN a.attr_type_id = (SELECT attr_type_id FROM attribute_type WHERE attr_type = 'select') THEN dv.field_value
         ELSE NULL
     END = avo.attr_value_opt_id
-    ORDER BY CASE WHEN a.attr_key = '${sort_by}' THEN 0 ELSE 1 END, dv.field_value ${sort_type};
-`
-
-    // console.log(fetchGridQuery, ">>> fetchGridQuery <<<")
+    ORDER BY CASE WHEN a.attr_key = '${sort_by}' THEN 0 ELSE 1 END, dv.field_value ${sort_type};`;
 
     pool.query(fetchAttributes, (error, result_attributes) => {
         if (error) return callback(error, null);

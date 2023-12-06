@@ -114,8 +114,6 @@ function applyEvents(conn, content_id, user_entered_values, event_type, callback
                                         callback(null, "Record added successfully");
                                     }
                                 });
-
-
                             }
                         }
                     })

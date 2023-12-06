@@ -2,14 +2,6 @@ const pool = require('../config/db');
 
 
 function getDashboardRoutes(req, callback) {
-    // const getRoutesQuery = `SELECT
-    // pr.primary_route_id, pr.primary_route_title, pr.primary_route_icon, pr.primary_route_item_order, pr.primary_route_path, pr.primary_route_status,
-    // c.content_id, c.content_title,
-    // ct.content_type_title,ct.content_type_key
-    // FROM primary_route pr
-    // left JOIN route_content rt ON rt.primary_route_id = pr.primary_route_id
-    // left JOIN content c ON c.content_id = rt.content_id
-    // left JOIN content_type ct on ct.content_type_id = c.content_type_id`;
 
     const getRoutesQuery = `SELECT * FROM primary_route;`;
 
@@ -27,6 +19,15 @@ function addNewRoute(req, callback) {
     pool.query(newRouteQuery, values, (error, success) => {
         if (error) return callback(error);
         return callback(null, 'route added successfully');
+    })
+}
+
+function addContent(req, callback) {
+    let values = [req.contentTypeID, req.contentTitle];
+    const query = `INSERT INTO content (content_type_id, content_title) VALUES(?, ?)`;
+    pool.query(query, values, (error, result) => {
+        if (error) return callback(error, null)
+        return callback(null, result)
     })
 }
 
@@ -51,7 +52,7 @@ function linkRouteWithContent(req, callback) {
     const route_id = req.selectedRouteID;
     const values = [content_id, route_id];
 
-    const query = `INSERT INTO route_content (primary_route_id,content_id) values(? , ?)`;
+    const query = `INSERT INTO route_content (content_id,primary_route_id) values(? , ?)`;
     pool.query(query, values, (error, success) => {
         if (error) return callback(error, null);
         return callback(null, success);
@@ -91,14 +92,14 @@ function addContentAttr(req, callback) {
     const attr_title = req.attrTitle;
     const attr_key = req.attrKey;
     const attr_type_id = req.attrTypeID;
-    const in_form = req.in_form;
-    const in_grid = req.in_grid;
-    const is_hidden = req.is_hidden;
-    const is_sortable = req.is_sortable;
-    const is_filterable = req.is_filterable;
+    const in_form = req.in_form == true ? 1 : 0;
+    const in_grid = req.in_grid == true ? 1 : 0;
+    const is_hidden = req.is_hidden == true ? 1 : 0;
+    const is_sortable = req.is_sortable == true ? 1 : 0;
+    const is_filterable = req.is_filterable == true ? 1 : 0;
     const attr_order = req.attr_order;
     const attr_width = req.attr_width;
-    const content_id = req.contentID
+    const content_id = req.contentID;
 
     const attr_meta = { "in_form": in_form, "in_grid": in_grid, "is_hidden": is_hidden, "attr_order": attr_order, "attr_width": attr_width, "is_sortable": is_sortable, "is_filterable": is_filterable }
     const query = `INSERT INTO attribute (attr_type_id, content_id, attr_key, attr_title, attr_meta) VALUES (?, ?, ?, ?, ?)`;
@@ -107,6 +108,27 @@ function addContentAttr(req, callback) {
         if (error) return callback(error, null)
         return callback(null, result)
     })
+}
+
+function addAction(req, callback) {
+    let values = [req.actionKey, req.actionTitle, req.actionIcon, req.actionDesc]
+    const query = `INSERT INTO action (action_key, action_title, action_icon, action_desc) values(?,?,?,?)`;
+    pool.query(query, values, (error, result) => {
+        if (error) return callback(error, null)
+        return callback(null, result)
+    })
+}
+
+function getActions(req, callback) {
+    const query = `SELECT * FROM action`;
+    pool.query(query, (error, result) => {
+        if (error) return callback(error, null);
+        return callback(null, result)
+    })
+}
+
+function addContentAction(req, callback) {
+
 }
 
 module.exports = {
@@ -119,4 +141,7 @@ module.exports = {
     getAttributeTypes,
     getContentAttributes,
     addContentAttr,
+    addContent,
+    addAction,
+    getActions
 };
