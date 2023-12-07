@@ -34,7 +34,7 @@ function linkEntityWithAttributes(conn, entityID, attributeIDs, callback) {
     const linkEntityAttributeQuery = `INSERT INTO entity_attribute(entity_id, attr_id) values ?`;
     conn.query(linkEntityAttributeQuery, [IDs], (error, result) => {
         if (error) {
-            handlePoolConnError(conn, error,callback);
+            handlePoolConnError(conn, error, callback);
         }
         callback(null);
     });
@@ -48,7 +48,7 @@ function insertValues(entityID, user_entered_values, conn, callback) {
 
         conn.query(insertIntoValuesQuery, values, (error, result) => {
             if (error) {
-                handlePoolConnError(conn, error,callback);
+                handlePoolConnError(conn, error, callback);
             } else {
                 successfulQueries++;
 
@@ -64,7 +64,7 @@ function applyEvents(conn, content_id, user_entered_values, event_type, callback
     const fetchContentEventsQuery = `SELECT * FROM event WHERE content_id = ${content_id} and event_type = '${event_type}'`;
     conn.query(fetchContentEventsQuery, (error, event_result) => {
         if (error) {
-            handlePoolConnError(conn, error,callback);
+            handlePoolConnError(conn, error, callback);
         } else {
             if (event_result.length > 0) {
 
@@ -82,15 +82,26 @@ function applyEvents(conn, content_id, user_entered_values, event_type, callback
                     let target_value = getEnteredValue(user_entered_values, mapping_attr_id, event_type)[target_key];
                     let attempt_query = event_operation.attempt_query;
 
+                    // event: {
+                    //     source: {
+                    //         mapping_attr_id: '',
+                    //         target_key: ''
+                    //     },
+                    //     operations: {
+                    //         attempt_query: ' To be executed ',
+                    //         action_query: 'To be executed if attempt_query failed'
+                    //     }
+                    // }
+
                     conn.query(attempt_query, [target_value], (error, attempt_result) => {
                         if (error) {
-                            handlePoolConnError(conn, error,callback);
+                            handlePoolConnError(conn, error, callback);
                         } else {
                             if (attempt_result.affectedRows == 0 && event_operation.action_query != "") {
                                 let action_query = event_operation.action_query;
                                 conn.query(action_query, [target_value], (err, action_result) => {
                                     if (error) {
-                                        handlePoolConnError(conn, error,callback);
+                                        handlePoolConnError(conn, error, callback);
                                     } else {
                                         // last. Commit queries
                                         conn.commit((error) => {
@@ -128,14 +139,12 @@ function applyEvents(conn, content_id, user_entered_values, event_type, callback
                         callback(null, "Record added successfully");
                     }
                 });
-
-
             }
         }
     })
 }
 
-function handlePoolConnError(conn, error,callback) {
+function handlePoolConnError(conn, error, callback) {
     conn.rollback((rollbackError) => {
         conn.release();
         return callback(error, null);

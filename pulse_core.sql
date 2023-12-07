@@ -88,8 +88,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `pulse_core_adaptive`.`attribute_value` (
   `attr_value_id` INT NOT NULL AUTO_INCREMENT,
   `attr_id` INT NOT NULL,
-  `attr_value` VARCHAR(255) NULL DEFAULT NULL,
-  `attr_default_value` VARCHAR(255) NULL DEFAULT NULL,
   `attr_fetch_value` JSON NULL DEFAULT NULL,
   `attr_custom_placeholder` VARCHAR(100) NULL DEFAULT NULL,
   `attr_entered_value` VARCHAR(255) NULL DEFAULT NULL,

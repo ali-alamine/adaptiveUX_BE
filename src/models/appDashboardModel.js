@@ -81,7 +81,7 @@ function getAttributeTypes(req, callback) {
 
 function getContentAttributes(req, callback) {
     const content_id = req.contentID;
-    const query = `SELECT * FROM attribute WHERE content_id = ${content_id}`;
+    const query = `SELECT * FROM attribute a JOIN attribute_type at on a.attr_type_id = at.attr_type_id WHERE a.content_id = ${content_id}`;
     pool.query(query, (error, result) => {
         if (error) return callback(error, null);
         return callback(null, result)
@@ -137,6 +137,7 @@ function addContentAction(req, callback) {
     const action_meta = { "order": action_order, "location": action_location };
     let values = [content_id, action_id, JSON.stringify(action_content_query), JSON.stringify(action_meta)];
     const query = `INSERT INTO action_content (content_id, action_id, action_content_query, action_content_meta) values(?, ?, ?, ?)`;
+
     pool.query(query, values, (error, result) => {
         if (error) return callback(error, null);
         return callback(null, result)
@@ -155,6 +156,113 @@ function getContentActions(req, callback) {
     })
 }
 
+function addAttrConfValue(req, callback) {
+    const attr_id = req.attrID;
+    const attr_custom_placeholder = req.attrCustomPlaceholder;
+    let values = [attr_id, attr_custom_placeholder]
+    const query = `INSERT INTO attribute_value (attr_id, attr_custom_placeholder) values (?, ?)`;
+    pool.query(query, values, (error, result) => {
+        if (error) return callback(error, null);
+        return callback(null, result)
+    })
+}
+
+function addAttributeValueOptions(req, callback) {
+    const attr_id = req.attrID;
+    const attr_value_options = req.attrValueOptions.split(';').map(query => query.trim());
+
+    let attrValueIDQuery = `SELECT attr_value_id FROM attribute_value WHERE attr_id = ${attr_id}`;
+    pool.query(attrValueIDQuery, (error, result) => {
+        if (error) return callback(error, null);
+        let attrValueID;
+        // If attribute_value not defined
+        if (result.length == 0) {
+            const defineValueQuery = `INSERT INTO attribute_value (attr_id) values(?)`;
+            pool.query(defineValueQuery, [attr_id], (error, result) => {
+                if (error) return callback(error, null);
+                attrValueID = result.insertId;
+            })
+        } else {
+            attrValueID = result[0].attr_value_id;
+        }
+
+        let values = '';
+        let separator;
+        for (let i = 0; i < attr_value_options.length; i++) {
+            separator = i == attr_value_options.length - 1 ? '' : ','
+            values += `(${attrValueID}, '${attr_value_options[i]}', 1) ${separator}`
+        }
+
+        const insertAttrValueOptions = `INSERT INTO attribute_value_option (attr_value_id, attr_value_opt_value, attr_value_opt_is_active) VALUES ${values}`;
+        pool.query(insertAttrValueOptions, (error, result) => {
+            if (error) return callback(error, null);
+            return callback(null, result);
+        })
+
+
+    })
+}
+
+function addAttributeFetchingConfig(req, callback) {
+    const attr_id = req.attrID;
+    const fetch_by = req.fetchBy;
+    const fetch_value = req.fetch_value;
+    const content_attr_ids = req.contentAttrIDs;
+    var attr_fetch_value = { "fetch_criteria": { "fetch_by": fetch_by, "fetch_value": fetch_value, "content_attr_ids": content_attr_ids } }
+    let attr_value_id;
+
+    pool.getConnection((err, conn) => {
+        if (err) {
+            conn.release();
+            return callback(err, null);
+        }
+
+        conn.beginTransaction((beginError) => {
+            if (beginError) {
+                conn.release();
+                return callback(beginError, null)
+            } else {
+                const checkAttrValueIDQuery = `SELECT attr_value_id FROM attribute_value WHERE attr_id = ${attr_id}`;
+                conn.query(checkAttrValueIDQuery, (error, result) => {
+                    if (error) {
+                        conn.release();
+                        return callback(error, null);
+                    }
+
+                    if (result.length > 0) {
+                        attr_value_id = result[0].attr_value_id;
+                        const updateFetchByConfQuery = `UPDATE attribute_value SET attr_fetch_value = ? WHERE attr_value_id = ${attr_value_id}`;
+                        conn.query(updateFetchByConfQuery, [JSON.stringify(attr_fetch_value)], (error, result) => {
+                            if (error) return callback(error, null)
+                            return callback(null, result);
+                        })
+
+                    } else {
+
+                        const values = [attr_id, JSON.stringify(attr_fetch_value)];
+                        const insertFetchByConfQuery = `INSERT INTO attribute_value (attr_id, attr_fetch_value) values( ?, ? )`;
+
+                        conn.query(insertFetchByConfQuery, values, (error, result) => {
+                            if (error) {
+                                conn.rollback(() => { conn.release(); });
+                                return callback(error, null);
+                            }
+
+                            return callback(null, result)
+                        })
+                    }
+                })
+            }
+        })
+    })
+}
+
+function addContentEvent(req, callback) {
+    const content_id = req.contentID;
+    // Add event type;
+    //  
+}
+
 module.exports = {
     getDashboardRoutes,
     addNewRoute,
@@ -170,4 +278,6 @@ module.exports = {
     getActions,
     addContentAction,
     getContentActions,
+    addAttrConfValue,
+    addAttributeValueOptions,
 };

@@ -99,6 +99,20 @@ function getContentActions(req, res) {
     })
 }
 
+function addAttrConfValue(req, res) {
+    appDashboardModel.addAttrConfValue(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result)
+    })
+}
+
+function addAttributeValueOptions(req, res) {
+    appDashboardModel.addAttributeValueOptions(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result);
+    })
+}
+
 module.exports = {
     getDashboardRoutes,
     addNewRoute,
@@ -114,4 +128,6 @@ module.exports = {
     getActions,
     addContentAction,
     getContentActions,
+    addAttrConfValue,
+    addAttributeValueOptions,
 }

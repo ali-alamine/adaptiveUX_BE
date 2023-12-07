@@ -72,7 +72,7 @@ function fetchGridRecords(req, callback) {
 
     const fetchAttributes = `SELECT 
     a.*, 
-    av.attr_value,av.attr_entered_value,av.attr_value_id, av.attr_fetch_value, av.attr_custom_placeholder,
+    av.attr_value_id, av.attr_fetch_value, av.attr_custom_placeholder,
     atp.attr_type, atp.attr_type_placeholder
     FROM attribute a
     LEFT JOIN attribute_type atp on a.attr_type_id = atp.attr_type_id
@@ -203,7 +203,8 @@ function handleAction(req, callback) {
             } else {
                 conn.query(getActionQuery, (error, result) => {
                     if (error) {
-                        return conn.rollback(() => { { conn.release(); } });
+                        conn.rollback(() => { conn.release(); });
+                        return callback(error, null)
                     }
 
                     const action_data = result[0];
@@ -215,7 +216,7 @@ function handleAction(req, callback) {
                         for (const query of queries) {
                             conn.query(query, [entity_id], (error, result) => {
                                 if (error) {
-                                    conn.rollback(() => { { conn.release(); } });
+                                    conn.rollback(() => { conn.release(); });
                                     return callback(error, null);
                                 }
                                 completedQueries++;
@@ -227,7 +228,7 @@ function handleAction(req, callback) {
                                         } else {
                                             conn.commit((commitErr) => {
                                                 if (commitErr) {
-                                                    conn.rollback(() => { { conn.release(); } });
+                                                    conn.rollback(() => { conn.release(); });
                                                     return callback(error, null);
                                                 } else {
                                                     conn.release();
@@ -286,6 +287,7 @@ function fetchAttributeValue(req, callback) {
         JOIN dy_value dv ON dv.entity_id = e.entity_id AND a.attr_id = dv.attr_id
         WHERE e.${data[0]?.fetch_by} = ?  AND a.attr_id in (?);
     `;
+    console.log(query, ' fetchAttributeValue ')
 
     for (const item of data) {
         pool.query(query, [item.fetch_value, item.content_attr_ids], (error, rows) => {

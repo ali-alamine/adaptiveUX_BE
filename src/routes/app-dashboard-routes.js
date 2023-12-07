@@ -16,5 +16,7 @@ router.post('/add_action', appDashboardController.addAction);
 router.get('/get_actions', appDashboardController.getActions);
 router.post('/add_action_content', appDashboardController.addContentAction);
 router.get('/get_content_actions', appDashboardController.getContentActions);
+router.post('/add_attr_value_conf', appDashboardController.addAttrConfValue);
+router.post('/add_attr_value_options', appDashboardController.addAttributeValueOptions);
 
 module.exports = router;

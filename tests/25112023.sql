@@ -132,8 +132,6 @@ DROP TABLE IF EXISTS `attribute_value`;
 CREATE TABLE `attribute_value` (
   `attr_value_id` int NOT NULL AUTO_INCREMENT,
   `attr_id` int NOT NULL,
-  `attr_value` varchar(255) DEFAULT NULL,
-  `attr_default_value` varchar(255) DEFAULT NULL,
   `attr_fetch_value` json DEFAULT NULL,
   `attr_custom_placeholder` varchar(100) DEFAULT NULL,
   `attr_entered_value` varchar(255) DEFAULT NULL,
