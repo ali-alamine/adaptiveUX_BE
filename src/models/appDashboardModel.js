@@ -128,7 +128,31 @@ function getActions(req, callback) {
 }
 
 function addContentAction(req, callback) {
+    const content_id = req.contentID;
+    const action_id = req.actionID;
+    const actionQueries = req.actionQueries.split(';').map(query => query.trim());
+    const action_content_query = { 'queries': actionQueries };
+    const action_order = req.actionOrder;
+    const action_location = req.actionLocation;
+    const action_meta = { "order": action_order, "location": action_location };
+    let values = [content_id, action_id, JSON.stringify(action_content_query), JSON.stringify(action_meta)];
+    const query = `INSERT INTO action_content (content_id, action_id, action_content_query, action_content_meta) values(?, ?, ?, ?)`;
+    pool.query(query, values, (error, result) => {
+        if (error) return callback(error, null);
+        return callback(null, result)
+    })
+}
 
+function getContentActions(req, callback) {
+    const content_id = req.contentID;
+    const query = `SELECT a.action_title, a.action_key,ac.action_content_query,c.content_title FROM action a
+    JOIN action_content ac on ac.action_id = a.action_id
+    JOIN content c on c.content_id = ac.content_id WHERE c.content_id = ${content_id}`;
+
+    pool.query(query, (error, result) => {
+        if (error) return callback(error, null);
+        return callback(null, result);
+    })
 }
 
 module.exports = {
@@ -143,5 +167,7 @@ module.exports = {
     addContentAttr,
     addContent,
     addAction,
-    getActions
+    getActions,
+    addContentAction,
+    getContentActions,
 };

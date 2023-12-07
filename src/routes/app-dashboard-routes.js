@@ -14,5 +14,7 @@ router.get('/get_content_attr', appDashboardController.getContentAttributes);
 router.post('/add_content_attr', appDashboardController.addContentAttr);
 router.post('/add_action', appDashboardController.addAction);
 router.get('/get_actions', appDashboardController.getActions);
+router.post('/add_action_content', appDashboardController.addContentAction);
+router.get('/get_content_actions', appDashboardController.getContentActions);
 
 module.exports = router;

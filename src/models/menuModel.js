@@ -8,7 +8,7 @@ function getRoutes(callback) {
   FROM primary_route pr
   left JOIN route_content rt ON rt.primary_route_id = pr.primary_route_id
   left JOIN content c ON c.content_id = rt.content_id
-  left JOIN content_type ct on ct.content_type_id = c.content_type_id`;
+  left JOIN content_type ct on ct.content_type_id = c.content_type_id ORDER BY pr.primary_route_item_order`;
 
   pool.query(query, (error, results) => {
     if (error) {

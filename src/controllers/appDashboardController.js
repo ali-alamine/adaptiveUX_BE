@@ -85,6 +85,20 @@ function getActions(req, res) {
     })
 }
 
+function addContentAction(req, res) {
+    appDashboardModel.addContentAction(req.body, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result);
+    })
+}
+
+function getContentActions(req, res) {
+    appDashboardModel.getContentActions(req.query, (error, result) => {
+        if (error) return res.status(500).send(error);
+        return res.json(result);
+    })
+}
+
 module.exports = {
     getDashboardRoutes,
     addNewRoute,
@@ -97,5 +111,7 @@ module.exports = {
     addContentAttr,
     addContent,
     addAction,
-    getActions
+    getActions,
+    addContentAction,
+    getContentActions,
 }

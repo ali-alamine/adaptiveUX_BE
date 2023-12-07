@@ -43,22 +43,11 @@ function addGridRecord(req, callback) {
                                                 return callback(error, null);
                                             } else {
                                                 // 5. Fetch content events
-
-                                                // applyEvents(conn, content_id, user_entered_values, EventTypes.ADD, (error) => {
-                                                //     if (error) {
-                                                //         return callback(error, null);
-                                                //     } else {
-                                                //         return callback(null, { entity_id: entityID, content_id: content_id });
-                                                //     }
-                                                // });
-
-
-                                                conn.commit((error) => {
-                                                    conn.release();
+                                                applyEvents(conn, content_id, user_entered_values, EventTypes.ADD, (error) => {
                                                     if (error) {
-                                                        conn.rollback(() => callback(error, null));
+                                                        return callback(error, null);
                                                     } else {
-                                                        callback(null, "Record added successfully");
+                                                        return callback(null, { entity_id: entityID, content_id: content_id });
                                                     }
                                                 });
                                             }
@@ -200,7 +189,7 @@ function handleAction(req, callback) {
     const entity_id = req.entityID;
     const getActionQuery = `SELECT a.*,ac.action_content_query,c.content_id,c.content_title FROM action a
     JOIN action_content ac on ac.action_id = a.action_id
-    JOIN content c on c.content_id = ac.content_id WHERE c.content_id = ${content_id} AND a.action_id = ${action_id};`;
+    JOIN content c on c.content_id = ac.content_id WHERE c.content_id = ${content_id} AND a.action_id = ${action_id}`;
 
     pool.getConnection((err, conn) => {
         if (err) {
@@ -218,14 +207,12 @@ function handleAction(req, callback) {
                     }
 
                     const action_data = result[0];
-                    const numberOfQuery = action_data.action_content_query.queries.length;
+                    const numberOfQuery = action_data?.action_content_query?.queries.length;
                     const queries = action_data.action_content_query.queries;
                     let completedQueries = 0;
 
                     if (action_data.action_id == action_id) {
-                        for (const obj of queries) {
-                            const key = Object.keys(obj)[0];
-                            let query = obj[key];
+                        for (const query of queries) {
                             conn.query(query, [entity_id], (error, result) => {
                                 if (error) {
                                     conn.rollback(() => { { conn.release(); } });
@@ -247,12 +234,9 @@ function handleAction(req, callback) {
                                                     callback(null, 'Record delete successfully');
                                                 }
                                             });
-
                                         }
                                     });
-
                                 }
-
                             });
                         }
                     }
