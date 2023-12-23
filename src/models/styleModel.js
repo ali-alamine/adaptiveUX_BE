@@ -64,7 +64,26 @@ function getUserStyle(req, callback) {
     })
 }
 
+function collectUserNav(req, callback) {
+
+    const user_id = req.user_id;
+    const visited_route_id = req.visited_route_id;
+    const current_route_order = req.current_route_order;
+    const session_id = req.session_id;
+    let values = [user_id, visited_route_id, current_route_order, session_id]
+
+    const query = `INSERT INTO user_nav_test_pred (user_id, visited_route_id, route_order, session_id) values(?, ?, ?, ?)`;
+    
+    pool.query(query, values, (error, result) => {
+        if (error) return callback(error, null)
+
+        return callback(null, `Inserted successfully - res: ${result}`)
+    })
+
+}
+
 module.exports = {
     submitUserFeedback,
-    getUserStyle
+    getUserStyle,
+    collectUserNav
 };

@@ -8,6 +8,15 @@ function submitUserFeedback(req, res) {
     })
 }
 
+function collectUserNav(req, res) {
+    const data = req.body;
+    styleModel.collectUserNav(data, (error, result) => {
+        if (error) return res.status(500).send(error);
+
+        return res.json(result)
+    })
+}
+
 function getUserStyle(req, res) {
     const data = req.data;
     styleModel.getUserStyle(data, (error, result) => {
@@ -18,5 +27,6 @@ function getUserStyle(req, res) {
 
 module.exports = {
     submitUserFeedback,
-    getUserStyle
+    getUserStyle,
+    collectUserNav
 }
