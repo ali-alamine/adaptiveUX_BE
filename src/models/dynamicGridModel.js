@@ -187,7 +187,7 @@ function handleAction(req, callback) {
     const action_id = req.actionID;
     const content_id = req.contentID;
     const entity_id = req.entityID;
-    const getActionQuery = `SELECT a.*,ac.action_content_query,c.content_id,c.content_title FROM action a
+    const getActionQuery = `SELECT a.*, ac.action_content_query, c.content_id, c.content_title FROM action a
     JOIN action_content ac on ac.action_id = a.action_id
     JOIN content c on c.content_id = ac.content_id WHERE c.content_id = ${content_id} AND a.action_id = ${action_id}`;
 

@@ -5,22 +5,32 @@ const userStyleModel = require('../models/styleModel');
 const axios = require('axios');
 
 function login(user, callback) {
-    // createFakeUser()
     // predictUserNav();
     // return;
     const loginQuery = `SELECT * FROM user u LEFT JOIN user_role ur on u.role_id = ur.role_id 
     WHERE u.username = '${user.username}' AND u.password_hash = '${user.password}'`;
 
-    pool.query(loginQuery, (error, result) => {
+    pool.query(loginQuery, (error, user) => {
         if (error) {
             return callback(error, 'Erorr login');
         } else {
-            userStyleModel.getUserStyle(result, (error, userStyles) => {
-                if (error) return callback(error, 'Erorr fetching user style');
+            userStyleModel.getUserStyle(user, (error, userStyles) => {
+                if (error) {
+                    return callback(error, 'Erorr fetching user style');
+                }
 
-                const uniqueID = generateUniqueID();
-                console.log(uniqueID, 'uniqueID >>')
-                return callback(null, { user: { user_data: result, styles: userStyles, session_id: uniqueID } });
+                else {
+
+                    gridStyleQuery = `SELECT grid_style FROM user_grid_style WHERE user_id = ${user[0].user_id}`;
+                    pool.query(gridStyleQuery, (error, grid_style) => {
+                        if (error) return callback(error, 'Error fetching Grid Style');
+
+                        const uniqueID = generateUniqueID();
+                        return callback(null, { user: { user_data: user, styles: userStyles, session_id: uniqueID, grid_style: grid_style[0].grid_style } });
+                    })
+
+                }
+
             })
         }
     })

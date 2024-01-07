@@ -1,10 +1,8 @@
 const pool = require('../config/db');
 const authModel = require('../models/authModel');
+
 function submitUserFeedback(data, callback) {
-    console.log(data, 'dataa');
-
     const UpdateQuery = `UPDATE user_style SET user_style_feedback = ${data?.feedback} WHERE user_id = ${data.user_id} AND style_type_id = ${data.style_type_id}`;
-
     const userData = [{ 'user_id': data?.user_id }];
 
     pool.query(UpdateQuery, (error, results) => {
@@ -53,7 +51,7 @@ function getUserStyle(req, callback) {
     FROM user_style us 
     LEFT JOIN user_style_type ust ON us.style_type_id = ust.style_type_id
     LEFT JOIN user_style_element usEl ON usEl.style_element_id = ust.style_element_id 
-    WHERE us.user_style_feedback = 1 OR us.user_style_feedback = 2 AND us.user_id = ${user_id}`;
+    WHERE us.user_style_feedback != -1 AND us.user_id = ${user_id} limit 2`;
 
     pool.query(query, (error, res) => {
         if (error) {
@@ -65,7 +63,6 @@ function getUserStyle(req, callback) {
 }
 
 function collectUserNav(req, callback) {
-
     const user_id = req.user_id;
     const visited_route_id = req.visited_route_id;
     const current_route_order = req.current_route_order;
@@ -73,11 +70,11 @@ function collectUserNav(req, callback) {
     let values = [user_id, visited_route_id, current_route_order, session_id]
 
     const query = `INSERT INTO user_nav_test_pred (user_id, visited_route_id, route_order, session_id) values(?, ?, ?, ?)`;
-    
+
     pool.query(query, values, (error, result) => {
         if (error) return callback(error, null)
 
-        return callback(null, `Inserted successfully - res: ${result}`)
+        return callback(null, result);
     })
 
 }
